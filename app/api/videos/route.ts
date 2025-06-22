@@ -1,7 +1,6 @@
 import { authOptions } from "@/lib/auth";
 import { connectionToDatabase } from "@/lib/db";
 import Video, { IVideo } from "@/models/Video";
-import { error } from "console";
 import { getServerSession } from "next-auth";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -13,8 +12,9 @@ export async function GET() {
         if(!videos || videos.length == 0){
             return NextResponse.json([], {status: 200})
         }
-        return NextResponse.json(videos)
+        return NextResponse.json(videos);
     }catch(error){
+        console.log(error);
         return NextResponse.json(
             {error: "Failed to fetch videos"},
             {status: 500}
@@ -47,7 +47,7 @@ export async function POST(request:NextRequest) {
 
         const videoData = {
             ...body,
-            controls: body.controls ?? true,
+            controls: body?.controls ?? true,
             transformation: {
                 height: 1920,
                 width: 1080,
@@ -55,9 +55,10 @@ export async function POST(request:NextRequest) {
             }
         }
 
-        const newVideo = await Video.create(videoData)
-        return NextResponse.json(newVideo)
+        const newVideo = await Video.create(videoData);
+        return NextResponse.json(newVideo);
     }catch(error){
+        console.log(error);
         return NextResponse.json(
             {error: "Failed to create a video"},
             {status: 401}

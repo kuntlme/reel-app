@@ -12,7 +12,7 @@ export interface IVideo {
     videoUrl: string;
     thumbnailUrl: string;
     controls?: boolean;
-    transfromation?: {
+    transformation?: {
         height: number,
         weith: number,
         quality?: number
@@ -44,7 +44,7 @@ const videoSchema = new Schema<IVideo>({
         type: Boolean,
         default: true
     },
-    transfromation: {
+    transformation: {
         height: {
             type: Number,
             default: VIDEO_DIMENTIONS.height
