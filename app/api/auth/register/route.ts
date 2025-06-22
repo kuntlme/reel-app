@@ -1,12 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
 import { connectionToDatabase } from "@/lib/db";
 import User from "@/models/User";
-import { error } from "console";
 
 export async function POST(request: NextRequest){
 
     try{
-        const {email, password} = await request.json()
+        const {email, password} = await request.json();
 
         if(!email || !password){
             return NextResponse.json(
@@ -15,9 +14,9 @@ export async function POST(request: NextRequest){
             )
         }
 
-        await connectionToDatabase()
+        await connectionToDatabase();
 
-        const existingUser = await User.findOne({email})
+        const existingUser = await User.findOne({email});
 
         if(existingUser){
             return NextResponse.json(
@@ -37,8 +36,9 @@ export async function POST(request: NextRequest){
         )
     }
     catch(error){
+        console.error(error);
         return NextResponse.json(
-            { error: "User registered successfully"},
+            { error: "Falied to User registered"},
             {status: 500}
         )
     }

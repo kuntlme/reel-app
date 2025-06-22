@@ -1,20 +1,23 @@
-import ImageKit from "imagekit"
+import { getUploadAuthParams } from "@imagekit/next/server";
 import { NextResponse } from "next/server";
 
-const imagekit = new ImageKit({
-  publicKey: process.env.NEXT_PUBLIC_PUBLIC_KEY!,
-  privateKey: process.env.PRIVATE_KEY!,
-  urlEndpoint: process.env.NEXT_PUBLIC_URL_ENDPOINT!,
-});
 
 export async function GET() {
-  try{
-    const authenticationParameters = imagekit.getAuthenticationParameters();
-    return NextResponse.json(authenticationParameters);
-  }catch(error){
+  try {
+    const authenticationParameters = getUploadAuthParams({
+      publicKey: process.env.NEXT_PUBLIC_PUBLIC_KEY as string,
+      privateKey: process.env.PRIVATE_KEY as string,
+    });
+    return NextResponse.json({
+      authenticationParameters,
+      publicKey: process.env.NEXT_PUBLIC_PUBLIC_KEY,
+    });
+  } catch (error) {
+    console.log(error);
     NextResponse.json(
-        {error: "ImageKit auth failed"},
-        {status: 500}
+      { error: "ImageKit auth failed" },
+      { status: 500 }
     )
   }
 }
+
