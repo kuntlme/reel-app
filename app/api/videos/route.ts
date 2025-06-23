@@ -44,6 +44,7 @@ export async function POST(request:NextRequest) {
                 {status: 401}
             )
         }
+        console.log(body);
 
         const videoData = {
             ...body,

@@ -9,7 +9,6 @@
 //     fileType?: "image" | "video"
 // }
 
-
 // export default function FileUpload({
 //     onSuccess,
 //     onProgress,
@@ -45,7 +44,7 @@
 //     const handleStartUpload = () => {
 //         setUploading(true);
 //         setError(null)
-//     }; 
+//     };
 
 //     const validateFile = (file: File) => {
 //         if(fileType === "video"){
@@ -79,7 +78,7 @@
 //             <IKUpload
 //                 fileName="test-upload.jpg"
 //                 validateFile={validateFile}
-                
+
 //                 onError={onError}
 //                 onSuccess={handleSuccess}
 //                 onUploadProgress={handleProgess}
@@ -113,115 +112,115 @@
 //     );
 // }
 
-"use client"
-import React, { FormEventHandler, useRef, useState } from 'react'
+"use client";
+import React, { FormEventHandler, useRef, useState } from "react";
 
 import {
-    ImageKitAbortError,
-    ImageKitInvalidRequestError,
-    ImageKitServerError,
-    ImageKitUploadNetworkError,
-    upload,
+  ImageKitAbortError,
+  ImageKitInvalidRequestError,
+  ImageKitServerError,
+  ImageKitUploadNetworkError,
+  upload,
+  UploadResponse,
 } from "@imagekit/next";
 
 interface FileUploadProps {
-    onSuccess: (res: any) => any,
-    onProgress?: (progress: number) => any,
-    fileType?: "image" | "video" 
+  onSuccess: (res: any) => any;
+  onProgress?: (progress: number) => any;
+  fileType?: "image" | "video";
 }
 
-const VideoUploadForm = ({onSuccess, onProgress, fileType="video"}: FileUploadProps) => {
-    const [progress, setProgress] = useState(0);
-    const [uploading, setUploading] = useState(false);
-    const abortController = new AbortController();
-    const fileInputRef = useRef<HTMLInputElement>(null);
+const VideoUploadForm = ({
+  onSuccess,
+  onProgress,
+  fileType = "video",
+}: FileUploadProps) => {
+  const [progress, setProgress] = useState(0);
+  const [uploading, setUploading] = useState(false);
+  const abortController = new AbortController();
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
-    const authenticator = async () => {
-        try {
-            const response = await fetch("/api/imagekit-auth");
-            if(!response.ok){
-                const errorText = await response.text();
-                throw new Error(`Request failed with status ${response.status}: ${errorText}`);
-            }
+  const authenticator = async () => {
+    try {
+      const response = await fetch("/api/imagekit-auth");
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(
+          `Request failed with status ${response.status}: ${errorText}`
+        );
+      }
 
-            const data = await response.json();
-            const { signature, expire, token, publicKey} = data;
-            return {
-                signature,
-                expire,
-                token,
-                publicKey
-            }
+      const data = await response.json();
+      console.log(data);
+      return {
+        signature: data.authenticationParameters.signature,
+        expire: data.authenticationParameters.expire,
+        token: data.authenticationParameters.token,
+        publicKey: data.publicKey,
+      };
+    } catch (error) {
+      console.log("imagekit auth error", error);
+      throw new Error("ImageKit auth error");
+    }
+  };
 
-        } catch (error) {
-            console.log("imagekit auth error", error);
-            throw new Error("ImageKit auth error");
-        }
+  const handleUpload = async (e: React.MouseEvent<HTMLButtonElement>) => {
+    const fileInput = fileInputRef.current;
+    if (!fileInput) {
+      alert("please select a file to upload");
+      return;
+    }
+    if (!fileInput.files || fileInput.files.length === 0) {
+      alert("please select a file to upload");
+      return;
+    }
+    const file = fileInput.files[0];
+
+    setUploading(true);
+
+    let authParam;
+    try {
+      authParam = await authenticator();
+    } catch (authError) {
+      console.error("Failed to authenticate for upload:", authError);
+      return;
     }
 
-    const handleUpload = async (e: React.MouseEvent<HTMLButtonElement>) => {
-        const fileInput = fileInputRef.current;
-        if(!fileInput){
-            alert("please select a file to upload");
-            return;
-        }
-        if (!fileInput.files || fileInput.files.length === 0) {
-            alert("please select a file to upload");
-            return;
-        }
-        const file = fileInput.files[0];
+    const { signature, expire, token, publicKey } = authParam;
 
-        setUploading(true);
-
-        let authParam;
-        try {
-            authParam = await authenticator();
-        } catch (authError) {
-            console.error("Failed to authenticate for upload:", authError);
-            return;
-        }
-
-        const {signature, expire, token, publicKey} = authParam;
-
-        try {
-            if(onProgress)
-            onProgress(progress);
-            const uploadResponse = await upload({
-                expire,
-                token,
-                signature,
-                publicKey,
-                file,
-                fileName: file.name,
-                onProgress: (event) => {
-                    setProgress(Math.round((event.loaded / event.total) * 100));
-                }
-            })
-            onSuccess(uploadResponse);
-        }
-        catch(error){
-            console.error("upload error", error);
-            alert("upload failed");
-        }
-        finally{
-            setUploading(false);
-        }
-
+    try {
+      const uploadResponse: UploadResponse = await upload({
+        expire,
+        token,
+        signature,
+        publicKey,
+        file,
+        fileName: file.name,
+        onProgress: (event) => {
+          setProgress(Math.round((event.loaded / event.total) * 100));
+          if (onProgress) onProgress(Math.round((event.loaded / event.total) * 100));
+        },
+        
+      });
+      onSuccess(uploadResponse);
+    } catch (error) {
+      console.error("upload error", error);
+      alert("upload failed");
+    } finally {
+      setUploading(false);
     }
+  };
 
   return (
     <div>
-        <div>
-            <input 
-            ref={fileInputRef}
-            type="file"
-            accept="video/*" />
-            <br />
-            {uploading ?? <p>Uploading: {progress}</p>}
-            <button onClick={handleUpload}>Upload</button>
-        </div>
+      <div>
+        <input ref={fileInputRef} type="file" accept="video/*" />
+        <br />
+        {uploading ?? <p>Uploading: {progress}</p>}
+        <button onClick={handleUpload}>Upload</button>
+      </div>
     </div>
-  )
-}
+  );
+};
 
-export default VideoUploadForm
+export default VideoUploadForm;

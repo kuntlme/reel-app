@@ -17,6 +17,7 @@ function LoginPage() {
         email,
         password,
         redirect: false,
+        
       });
 
       if (result?.error) {

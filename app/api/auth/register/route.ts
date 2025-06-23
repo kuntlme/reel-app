@@ -15,6 +15,7 @@ export async function POST(request: NextRequest){
         }
 
         await connectionToDatabase();
+        console.log("connected to db");
 
         const existingUser = await User.findOne({email});
 
