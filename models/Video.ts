@@ -9,14 +9,12 @@ export interface IVideo {
     _id?: mongoose.Types.ObjectId;
     title: string;
     description: string;
-    videoUrl: {
-        title: string;
-    };
+    videoUrl: string;
     thumbnailUrl: string;
     controls?: boolean;
     transformation?: {
         height: number,
-        weith: number,
+        width: number,
         quality?: number
     }
     createdAt?: Date;
@@ -33,10 +31,8 @@ const videoSchema = new Schema<IVideo>({
         required: true
     },
     videoUrl: {
-        title: {
-            type: String,
-            required: true
-        }
+        type: String,
+        required: true
     },
     thumbnailUrl: {
         type: String,
@@ -51,7 +47,7 @@ const videoSchema = new Schema<IVideo>({
             type: Number,
             default: VIDEO_DIMENTIONS.height
         },
-        weith: {
+        width: {
             type: Number,
             default: VIDEO_DIMENTIONS.width
         },

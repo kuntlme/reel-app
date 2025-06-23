@@ -29,9 +29,7 @@ const page = () => {
             body: JSON.stringify({
               title: response.name,
               description: "sample description",
-              videoUrl: {
-                title: response.url
-              },
+              videoUrl: response.url,
               thumbnailUrl:
                 "https://ik.imagekit.io/srz0flizn/default-image.jpg?updatedAt=1739787013941",
               controls: true,
