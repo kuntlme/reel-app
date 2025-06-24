@@ -1,20 +1,11 @@
-"use client"
+
 import { useEffect, useState } from 'react';
 import { Play, Sparkles, TrendingUp, Users } from 'lucide-react';
 import { Button } from './ui/button';
-import { useSession } from 'next-auth/react';
-import { tree } from 'next/dist/build/templates/app-page';
 
 const Landing = () => {
   // Mock check for user authentication - in real app this would come from auth context
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const session = useSession();
-  
-  useEffect(() => {
-    if(session){
-        setIsLoggedIn(true);
-    }
-  }, [session]);
 
   const features = [
     {
