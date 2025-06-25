@@ -13,3 +13,78 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
+model User {
+  userid       String   @id @default(uuid())
+  profilename  String
+  username     String   @unique
+  joining_date DateTime
+  location     String
+
+  //relations
+  videos       Video[]
+  interactions Interaction[]
+  creator      Creator?
+  viewer       Viewer?
+}
+
+model Creator {
+  userid               String @id
+  total_video_uploaded Int
+
+  //relations
+  user User @relation(fields: [userid], references: [userid])
+}
+
+model Viewer {
+  userid             String @id
+  total_interactions Int
+
+  //relations
+  user User @relation(fields: [userid], references: [userid])
+}
+
+model Video {
+  videoid     String   @id @default(uuid())
+  uploader_id String
+  description String
+  sharelink   String
+  viewcount   Int
+  uploaded_at DateTime
+
+  //relations
+  uploader     User          @relation(fields: [uploader_id], references: [userid])
+  interactions Interaction[]
+}
+
+model Interaction {
+  interaction_id String          @id @default(uuid())
+  user_id        String
+  video_id       String
+  interaction_at DateTime
+  type           InteractionType
+
+  //relations
+  user    User     @relation(fields: [user_id], references: [userid])
+  video   Video    @relation(fields: [video_id], references: [videoid])
+  like    Like?
+  comment Comment?
+}
+
+model Comment {
+  interaction_id String @id
+  comment_text   String
+
+  //relations
+  interaction Interaction @relation(fields: [interaction_id], references: [interaction_id])
+}
+
+model Like {
+  interaction_id String      @id
+  interaction    Interaction @relation(fields: [interaction_id], references: [interaction_id])
+}
+
+enum InteractionType {
+  comment
+  like
+}
