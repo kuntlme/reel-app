@@ -1,11 +1,9 @@
 
-import { useEffect, useState } from 'react';
 import { Play, Sparkles, TrendingUp, Users } from 'lucide-react';
 import { Button } from './ui/button';
 
 const Landing = () => {
   // Mock check for user authentication - in real app this would come from auth context
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   const features = [
     {
@@ -128,7 +126,7 @@ const Landing = () => {
               className="bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white text-lg px-12 py-4"
               onClick={() => window.location.href = '/signup'}
             >
-              Join Now - It's Free!
+              Join Now - It`&apos`s Free!
             </Button>
           </div>
         </div>
