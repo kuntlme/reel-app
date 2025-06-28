@@ -3,6 +3,7 @@ import { ImageKitProvider } from "@imagekit/next";
 import { SessionProvider } from "next-auth/react";
 import { ThemeProvider } from "next-themes";
 import React from "react";
+import { Toaster } from "sonner";
 
 const urlEndpoint = process.env.NEXT_PUBLIC_URL_ENDPOINT;
 // const publicKey = process.env.NEXT_PUBLIC_PUBLIC_KEY;
@@ -30,6 +31,7 @@ export default function Providers({ children }: { children: React.ReactNode }) {
       <SessionProvider refetchInterval={5 * 60}>
         <ImageKitProvider urlEndpoint={urlEndpoint}>
           {children}
+          <Toaster richColors position="top-right"/>
         </ImageKitProvider>
       </SessionProvider>
     </ThemeProvider>
