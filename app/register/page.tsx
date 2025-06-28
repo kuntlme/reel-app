@@ -28,14 +28,15 @@ function RegisterPage() {
           password,
         }),
       });
+      
+      if (!res.ok) {
+        throw new Error("registration failed");
+      }
 
       const data = await res.json();
 
-      if (!data.ok) {
-        throw new Error(data.error || "registration failed");
-      }
-
       console.log(data);
+      
       router.push("/login");
     } catch (error) {
       console.log(error);

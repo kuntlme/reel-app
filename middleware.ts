@@ -1,8 +1,14 @@
 import withAuth from "next-auth/middleware";
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 
 export default withAuth(
-    function middleware(){
+    function middleware(req: NextRequest){
+        const { pathname} = req.nextUrl;
+
+        if(pathname === "/"){
+            return NextResponse.redirect(new URL("/home", req.url));
+        }
+
         return NextResponse.next()
     },
     {

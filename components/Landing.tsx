@@ -1,8 +1,10 @@
-
+"use client"
 import { Play, Sparkles, TrendingUp, Users } from 'lucide-react';
 import { Button } from './ui/button';
+import { useRouter } from 'next/navigation';
 
 const Landing = () => {
+  const router = useRouter()
   // Mock check for user authentication - in real app this would come from auth context
 
   const features = [
@@ -39,13 +41,13 @@ const Landing = () => {
             <Button 
               variant="ghost" 
               className="text-gray-400 hover:text-white"
-              onClick={() => window.location.href = '/signin'}
+              onClick={() => router.push("/login")}
             >
               Sign In
             </Button>
             <Button 
               className="bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white"
-              onClick={() => window.location.href = '/signup'}
+              onClick={() => window.location.href = '/register'}
             >
               Get Started
             </Button>
