@@ -15,15 +15,17 @@ datasource db {
 }
 
 model User {
+  email        String   @unique
   userid       String   @id @default(uuid())
+  password     String
   profilename  String
   username     String   @unique
   joining_date DateTime
   location     String
 
   //relations
-  videos       Video[]
-  interactions Interaction[]
+  videos       Video[]       @relation("UserVideos")
+  interactions Interaction[] @relation("UserInteractions")
   creator      Creator?
   viewer       Viewer?
 }
@@ -53,7 +55,7 @@ model Video {
   uploaded_at DateTime
 
   //relations
-  uploader     User          @relation(fields: [uploader_id], references: [userid])
+  uploader     User          @relation("UserVideos", fields: [uploader_id], references: [userid], onDelete: Cascade)
   interactions Interaction[]
 }
 
@@ -65,7 +67,7 @@ model Interaction {
   type           InteractionType
 
   //relations
-  user    User     @relation(fields: [user_id], references: [userid])
+  user    User     @relation("UserInteractions", fields: [user_id], references: [userid], onDelete: Cascade)
   video   Video    @relation(fields: [video_id], references: [videoid])
   like    Like?
   comment Comment?

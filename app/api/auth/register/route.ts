@@ -1,46 +1,35 @@
 import { NextRequest, NextResponse } from "next/server";
-import { connectionToDatabase } from "@/lib/db";
-import User from "@/models/User";
+import { CreateUserInput, createUserSchema } from "@/lib/type";
+import { createUser } from "@/lib/query/query.user";
+import { hashPassword } from "@/lib/hash";
 
-export async function POST(request: NextRequest){
+export async function POST(request: NextRequest) {
 
-    try{
-        const {email, password} = await request.json();
+    try {
+        const body = await request.json();
+        const result = createUserSchema.safeParse(body);
 
-        if(!email || !password){
+        if (!result.success) {
             return NextResponse.json(
-                {error: "Email and password are required"},
-                {status: 400}
+                { error: result.error.format() },
+                { status: 405 },
             )
         }
 
-        await connectionToDatabase();
-        console.log("connected to db");
+        let userData: CreateUserInput = result.data;
 
-        const existingUser = await User.findOne({email});
-
-        if(existingUser){
-            return NextResponse.json(
-                {error: "Email is already registered"},
-                {status: 400}
-            )
-        }
-
-        await User.create({
-            email,
-            password
-        })
+        const user = createUser(userData);
 
         return NextResponse.json(
-            {message: "User registered successfully"},
-            {status: 200}
+            { message: "User registered successfully", user },
+            { status: 200 }
         )
     }
-    catch(error){
+    catch (error) {
         console.error(error);
         return NextResponse.json(
-            { error: "Falied to User registered"},
-            {status: 500}
+            { error: "Falied to User registered" },
+            { status: 500 }
         )
     }
 }

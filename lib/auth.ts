@@ -3,6 +3,8 @@ import CredentialsProvider from "next-auth/providers/credentials";
  import { connectionToDatabase } from "./db";
 import bcrypt from "bcryptjs"
 import UserModel from "@/models/User";
+import { getUserByEmail } from "./query/query.user";
+import { verifyPassword } from "./hash";
 
 export const authOptions: NextAuthOptions = {
     providers: [
@@ -19,19 +21,19 @@ export const authOptions: NextAuthOptions = {
                 }
 
                 try{
-                    await connectionToDatabase();
-                    const user = await UserModel.findOne({ email: credentials.email});
+                    const user = await getUserByEmail(credentials.email);
                     if(!user){
                         throw new Error("no user found");
                     }
-                    const isValid = await bcrypt.compare(credentials.password, user.password);  
+
+                    const isValid = await verifyPassword(credentials.password, user.password);  
 
                     if(!isValid){
                         throw new Error("Invalid Password");
                     }
 
                     return {
-                        id: user._id.toString(),
+                        id: user.userid.toString(),
                         email: user.email
                     }
 
