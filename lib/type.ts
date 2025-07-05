@@ -29,3 +29,17 @@ export const createVideoSchema = z.object({
 })
 
 export type createVideoInput = z.infer<typeof createVideoSchema>
+
+
+export const createInteractionSchema = z.discriminatedUnion("type", [
+    z.object({
+        type: z.literal("comment"),
+        comment_text: z.string(),
+    }),
+    z.object({
+        type: z.literal("like"),
+        comment_text: z.undefined()
+    })
+])
+
+export type createInteractionInput = z.infer<typeof createInteractionSchema>
