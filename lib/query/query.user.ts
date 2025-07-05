@@ -45,3 +45,7 @@ export const updateUser = async (userid: string, data: updateUserInput) =>
 // Delete user
 export const deleteUser = async (userid: string) =>
     await prismaClient.user.delete({ where: { userid } });
+
+// get user list
+export const getUserList = async () =>
+    await prismaClient.user.findMany();

@@ -20,3 +20,12 @@ export const updateUserSchema = z.object({
 
 
 export type updateUserInput = z.infer<typeof updateUserSchema>;
+
+
+export const createVideoSchema = z.object({
+    description: z.string(),
+    sharelink: z.string(),
+    uploaded_at: z.coerce.date()
+})
+
+export type createVideoInput = z.infer<typeof createVideoSchema>

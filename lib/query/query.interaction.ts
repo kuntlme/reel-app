@@ -68,3 +68,22 @@ export const getTopCreators = async() =>
     take: 5,
     include: { user: true },
   });
+
+
+
+
+  // Increment creator’s total_videos_uploaded when uploading a video
+export const bumpCreatorCount = async (uploader_id: string) => 
+  await prismaClient.creator.upsert({
+    where: { userid: uploader_id },
+    update: { total_videos_uploaded: { increment: 1 } },
+    create: { userid: uploader_id, total_videos_uploaded: 1 },
+  });
+
+// Fetch Creator stats for a user
+export const getCreatorStats = (userid: string) =>
+  prismaClient.creator.findUnique({ where: { userid } });
+
+// Fetch Viewer stats for a user
+export const getViewerStats = (userid: string) =>
+  prismaClient.viewer.findUnique({ where: { userid } });

@@ -1,15 +1,10 @@
 import { Prisma, PrismaClient } from "@/app/generated/prisma";
+import { createVideoInput } from "../type";
 const prismaClient = new PrismaClient();
 
 
 // Create a new video
-export const createVideo = async (data: {
-  uploader_id: string;
-  description: string;
-  sharelink: string;
-  viewcount?: number;      // defaults to 0 if you like
-  uploaded_at?: Date;      // defaults to now()
-}) =>
+export const createVideo = async (data: createVideoInput & {uploader_id: string}) =>
   await prismaClient.video.create({ data });
 
 // Get a video (with uploader & interactions)
@@ -41,3 +36,9 @@ export const incrementVideoViews = async (videoid: string) =>
 // Delete video
 export const deleteVideo = async (videoid: string) =>
   await prismaClient.video.delete({ where: { videoid } });
+
+
+
+// get list of videos
+export const getVideoList = async () =>
+  await prismaClient.video.findMany({ orderBy: {uploaded_at: "desc"} });
