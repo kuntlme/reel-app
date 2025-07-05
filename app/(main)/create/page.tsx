@@ -1,10 +1,14 @@
-import CreateVideo from '@/components/CreateVideo'
-import React from 'react'
+"use client"
+import CreateVideo from "@/components/CreateVideo";
+import dynamic from "next/dynamic";
+import React from "react";
 
-const page = () => {
+const DynamicCreateVideo = dynamic(() => import("@/components/CreateVideo"), {ssr: false});
+
+export default function Page() {
   return (
-    <div><CreateVideo /></div>
-  )
+    <div>
+      <DynamicCreateVideo />
+    </div>
+  );
 }
-
-export default page

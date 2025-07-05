@@ -1,58 +1,177 @@
-"use client"
-import { useState } from 'react';
-import { Upload, Camera, Music, Hash, X, Plus } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Label } from '@radix-ui/react-label';
-import { Input } from './ui/input';
-import { Textarea } from './ui/textarea';
+"use client";
+import React, { useEffect, useRef, useState } from "react";
+import { Upload, Camera, Music, Hash, X, Plus } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Label } from "@radix-ui/react-label";
+import { Input } from "./ui/input";
+import { Textarea } from "./ui/textarea";
+import { Progress } from "./ui/progress";
+import { upload } from "@imagekit/next";
+import { toast } from "sonner";
+import dynamic from "next/dynamic";
+import { useRouter } from "next/navigation";
+
+type UploadResponse = {
+  name?: string;
+  url?: string;
+  // add other properties if needed
+};
 
 const CreateVideo = () => {
-  const [title, setTitle] = useState('');
-  const [description, setDescription] = useState('');
+  const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
   const [tags, setTags] = useState<string[]>([]);
-  const [newTag, setNewTag] = useState('');
+  const [newTag, setNewTag] = useState("");
   const [videoFile, setVideoFile] = useState<File | null>(null);
   const [thumbnail, setThumbnail] = useState<File | null>(null);
   const [isUploading, setIsUploading] = useState(false);
+  const [progress, setProgress] = useState(0);
+  const [onSuccess, setOnsuccess] = useState(false);
+  const [response, setResponse] = useState<UploadResponse | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const router = useRouter();
+
+  const authenticator = async () => {
+    try {
+      const response = await fetch("/api/imagekit-auth");
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(
+          `Request failed with status ${response.status}: ${errorText}`
+        );
+      }
+
+      const data = await response.json();
+      console.log(data);
+      return {
+        signature: data.authenticationParameters.signature,
+        expire: data.authenticationParameters.expire,
+        token: data.authenticationParameters.token,
+        publicKey: data.publicKey,
+      };
+    } catch (error) {
+      console.log("imagekit auth error", error);
+      throw new Error("ImageKit auth error");
+    }
+  };
+
+  const handleUpload = async () => {
+    const fileInput = fileInputRef.current;
+    if (!fileInput) {
+      alert("please select a file to upload");
+      return;
+    }
+    if (!fileInput.files || fileInput.files.length === 0) {
+      alert("please select a file to upload");
+      return;
+    }
+    const file = fileInput.files[0];
+
+    setIsUploading(true);
+
+    let authParam;
+    try {
+      authParam = await authenticator();
+    } catch (authError) {
+      console.error("Failed to authenticate for upload:", authError);
+      return;
+    }
+
+    const { signature, expire, token, publicKey } = authParam;
+
+    try {
+      const uploadResponse: UploadResponse = await upload({
+        expire,
+        token,
+        signature,
+        publicKey,
+        file,
+        fileName: file.name,
+        onProgress: (event) => {
+          setProgress(Math.round((event.loaded / event.total) * 100));
+        },
+      });
+      setResponse(uploadResponse);
+      console.log(uploadResponse);
+      toast("uploaded to imagekit");
+    } catch (error) {
+      console.error("upload error", error);
+      alert("upload failed");
+    } finally {
+      setIsUploading(false);
+    }
+  };
+
+
 
   const addTag = () => {
     if (newTag.trim() && !tags.includes(newTag.trim())) {
       setTags([...tags, newTag.trim()]);
-      setNewTag('');
+      setNewTag("");
     }
   };
 
   const removeTag = (tagToRemove: string) => {
-    setTags(tags.filter(tag => tag !== tagToRemove));
+    setTags(tags.filter((tag) => tag !== tagToRemove));
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsUploading(true);
+  // const handleSubmit = async (e: React.FormEvent) => {
+  //   e.preventDefault();
+  //   setIsUploading(true);
 
-    // Simulate upload process
-    setTimeout(() => {
-      console.log('Video uploaded!', { title, description, tags, videoFile, thumbnail });
+  //   // Simulate upload process
+  //   setTimeout(() => {
+  //     console.log('Video uploaded!', { title, description, tags, videoFile, thumbnail });
+
+  //     // Reset form
+  //     setTitle('');
+  //     setDescription('');
+  //     setTags([]);
+  //     setVideoFile(null);
+  //     setThumbnail(null);
+  //     setIsUploading(false);
+
+  //     alert('Video uploaded successfully!');
+  //   }, 2000);
+  // };
+
+  const hadlleSubmit = async (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault()
+    if (!response || !description) return;
+    try {
+      const date = new Date().toISOString();
+      console.log(date);
+      const res = await fetch("/api/videos", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+        body: JSON.stringify({
+          description: description,
+          sharelink: response.url,
+          uploaded_at: date,
+        }),
+      });
+      console.log(await res.json());
+      toast("file submitted");
+      router.push("/home");
       
-      // Reset form
-      setTitle('');
-      setDescription('');
-      setTags([]);
-      setVideoFile(null);
-      setThumbnail(null);
-      setIsUploading(false);
-      
-      alert('Video uploaded successfully!');
-    }, 2000);
+    } catch (error) {
+      throw new Error("upload failed" + error);
+      toast("upload failed");
+    }
   };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-purple-900/20 to-black pt-20 pb-24">
       <div className="max-w-4xl mx-auto p-6">
         <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold gradient-text mb-2">Create New Short</h1>
+          <h1 className="text-3xl font-bold gradient-text mb-2">
+            Create New Short
+          </h1>
           <p className="text-gray-400">Share your creativity with the world</p>
         </div>
 
@@ -91,19 +210,27 @@ const CreateVideo = () => {
                         <Upload className="h-8 w-8 text-gray-400" />
                       </div>
                       <div>
-                        <p className="text-gray-300 mb-2">Drop your video here or</p>
+                        <p className="text-gray-300 mb-2">
+                          Drop your video here or
+                        </p>
                         <input
                           type="file"
                           accept="video/*"
                           id="video-upload"
                           className="hidden"
-                          onChange={(e) => setVideoFile(e.target.files?.[0] || null)}
+                          onChange={(e) => {
+                            setVideoFile(e.target.files?.[0] || null);
+                            handleUpload();
+                          }}
+                          ref={fileInputRef}
                         />
                         <Button
                           type="button"
                           variant="outline"
                           className="border-purple-500 text-purple-400 hover:bg-purple-500/10"
-                          onClick={() => document.getElementById('video-upload')?.click()}
+                          onClick={() =>
+                            document.getElementById("video-upload")?.click()
+                          }
                         >
                           Browse Files
                         </Button>
@@ -114,12 +241,14 @@ const CreateVideo = () => {
               </div>
 
               {/* Thumbnail Upload */}
-              <div>
+              {/* <div>
                 <Label className="text-gray-300">Thumbnail (Optional)</Label>
                 <div className="mt-2 border border-gray-600 rounded-lg p-4">
                   {thumbnail ? (
                     <div className="flex items-center justify-between">
-                      <span className="text-sm text-gray-300">{thumbnail.name}</span>
+                      <span className="text-sm text-gray-300">
+                        {thumbnail.name}
+                      </span>
                       <Button
                         variant="ghost"
                         size="sm"
@@ -136,13 +265,17 @@ const CreateVideo = () => {
                         accept="image/*"
                         id="thumbnail-upload"
                         className="hidden"
-                        onChange={(e) => setThumbnail(e.target.files?.[0] || null)}
+                        onChange={(e) =>
+                          setThumbnail(e.target.files?.[0] || null)
+                        }
                       />
                       <Button
                         type="button"
                         variant="ghost"
                         className="w-full text-gray-400 hover:text-white"
-                        onClick={() => document.getElementById('thumbnail-upload')?.click()}
+                        onClick={() =>
+                          document.getElementById("thumbnail-upload")?.click()
+                        }
                       >
                         <Plus className="h-4 w-4 mr-2" />
                         Add Custom Thumbnail
@@ -150,7 +283,13 @@ const CreateVideo = () => {
                     </div>
                   )}
                 </div>
-              </div>
+              </div> */}
+
+              {videoFile && (
+                <div>
+                  <Progress value={progress} max={100} />
+                </div>
+              )}
             </CardContent>
           </Card>
 
@@ -160,9 +299,9 @@ const CreateVideo = () => {
               <CardTitle className="text-white">Video Details</CardTitle>
             </CardHeader>
             <CardContent>
-              <form onSubmit={handleSubmit} className="space-y-6">
+              <form /* onSubmit={handleSubmit} */ className="space-y-6">
                 {/* Title */}
-                <div>
+                {/* <div>
                   <Label htmlFor="title" className="text-gray-300">Title</Label>
                   <Input
                     id="title"
@@ -172,11 +311,13 @@ const CreateVideo = () => {
                     className="mt-1 bg-gray-700/50 border-gray-600 text-white placeholder-gray-400"
                     required
                   />
-                </div>
+                </div> */}
 
                 {/* Description */}
                 <div>
-                  <Label htmlFor="description" className="text-gray-300">Description</Label>
+                  <Label htmlFor="description" className="text-gray-300">
+                    Description
+                  </Label>
                   <Textarea
                     id="description"
                     value={description}
@@ -199,7 +340,9 @@ const CreateVideo = () => {
                       onChange={(e) => setNewTag(e.target.value)}
                       placeholder="Add tag..."
                       className="bg-gray-700/50 border-gray-600 text-white placeholder-gray-400"
-                      onKeyPress={(e) => e.key === 'Enter' && (e.preventDefault(), addTag())}
+                      onKeyPress={(e) =>
+                        e.key === "Enter" && (e.preventDefault(), addTag())
+                      }
                     />
                     <Button
                       type="button"
@@ -209,7 +352,7 @@ const CreateVideo = () => {
                       Add
                     </Button>
                   </div>
-                  
+
                   {/* Display Tags */}
                   {tags.length > 0 && (
                     <div className="mt-3 flex flex-wrap gap-2">
@@ -234,8 +377,8 @@ const CreateVideo = () => {
 
                 {/* Submit Button */}
                 <Button
-                  type="submit"
-                  disabled={!videoFile || !title || isUploading}
+                  onClick={hadlleSubmit}
+                  disabled={!description || isUploading || !response}
                   className="w-full bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white font-semibold py-3 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   {isUploading ? (
@@ -244,7 +387,7 @@ const CreateVideo = () => {
                       Uploading...
                     </div>
                   ) : (
-                    'Upload Video'
+                    "Upload Video"
                   )}
                 </Button>
               </form>
