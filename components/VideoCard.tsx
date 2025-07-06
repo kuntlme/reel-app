@@ -5,36 +5,34 @@ import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { useRouter } from 'next/navigation';
+import Image from 'next/image';
 
 interface Video {
-  id: string;
-  title: string;
-  creator: string;
-  avatar: string;
-  thumbnail: string;
-  duration: string;
-  views: string;
-  likes: number;
-  comments: number;
-  shares: number;
-  isLiked: boolean;
-  tags: string[];
+  videoid: string;
+  uploader_id: string;
+  description: string;
+  sharelink: string;
+  viewcount: number;
+  uploaded_at: string;
+  uploader: {
+    username: string
+  };
 }
 
 interface VideoCardProps {
   video: Video;
-  onLike: (id: string) => void;
-  onComment: (id: string) => void;
-  onShare: (id: string) => void;
+  // onLike: (id: string) => void;
+  // onComment: (id: string) => void;
+  // onShare: (id: string) => void;
 }
 
-const VideoCard = ({ video, onLike, onComment, onShare }: VideoCardProps) => {
+const VideoCard = ({ video }: VideoCardProps) => {
   const router = useRouter();
   const [isPlaying, setIsPlaying] = useState(false);
-  const [isMuted, setIsMuted] = useState(true);
+  // const [isMuted, setIsMuted] = useState(true);
 
   const handleVideoClick = () => {
-    router.push(`/video/${video.id}`);
+    router.push(`/video/${video.videoid}`);
   };
 
   return (
@@ -44,10 +42,12 @@ const VideoCard = ({ video, onLike, onComment, onShare }: VideoCardProps) => {
         className="relative aspect-[9/16] bg-gradient-to-br from-purple-600 to-pink-600 cursor-pointer"
         onClick={handleVideoClick}
       >
-        <img 
-          src={video.thumbnail} 
-          alt={video.title}
+        <Image 
+          src={video.sharelink + `/ik-thumbnail.jpg`} 
+          alt={video.sharelink + `ik-thumbnail.jpg`}
           className="w-full h-full object-cover"
+          height={300}
+          width={100}
         />
         
         {/* Play Button Overlay */}
@@ -60,17 +60,18 @@ const VideoCard = ({ video, onLike, onComment, onShare }: VideoCardProps) => {
               setIsPlaying(!isPlaying);
             }}
           >
-            {isPlaying ? <Pause className="h-8 w-8" /> : <Play className="h-8 w-8" />}
+            {/* {isPlaying ? <Pause className="h-8 w-8" /> : <Play className="h-8 w-8" />} */}
+            <Play className="h-8 w-8" />
           </Button>
         </div>
 
         {/* Duration Badge */}
-        <Badge className="absolute top-3 right-3 bg-black/50 text-white border-0">
+        {/* <Badge className="absolute top-3 right-3 bg-black/50 text-white border-0">
           {video.duration}
-        </Badge>
+        </Badge> */}
 
         {/* Sound Toggle */}
-        <Button
+        {/* <Button
           size="sm"
           variant="ghost"
           className="absolute bottom-3 right-3 bg-black/50 hover:bg-black/70 text-white"
@@ -80,10 +81,10 @@ const VideoCard = ({ video, onLike, onComment, onShare }: VideoCardProps) => {
           }}
         >
           {isMuted ? <VolumeX className="h-4 w-4" /> : <Volume2 className="h-4 w-4" />}
-        </Button>
+        </Button> */}
 
         {/* Engagement Buttons */}
-        <div className="absolute right-3 bottom-16 flex flex-col gap-3">
+        {/* <div className="absolute right-3 bottom-16 flex flex-col gap-3">
           <Button
             size="sm"
             variant="ghost"
@@ -124,23 +125,23 @@ const VideoCard = ({ video, onLike, onComment, onShare }: VideoCardProps) => {
             <Share className="h-5 w-5" />
           </Button>
           <span className="text-xs text-white text-center">{video.shares}</span>
-        </div>
+        </div> */}
       </div>
 
       {/* Video Info */}
       <div className="p-4 space-y-3">
         <div className="flex items-start gap-3">
           <Avatar className="h-10 w-10 ring-2 ring-purple-500/50">
-            <AvatarImage src={video.avatar} alt={video.creator} />
+            <AvatarImage src={"ds"} alt={video.videoid.charAt(0)} />
             <AvatarFallback className="bg-gradient-to-br from-purple-500 to-pink-500 text-white">
-              {video.creator.charAt(0)}
+              {video.videoid.charAt(0)}
             </AvatarFallback>
           </Avatar>
           
           <div className="flex-1 min-w-0">
-            <h3 className="font-semibold text-white truncate">{video.title}</h3>
-            <p className="text-sm text-gray-400">@{video.creator}</p>
-            <p className="text-xs text-gray-500">{video.views} views</p>
+            <h3 className="font-semibold text-white truncate">{video.description}</h3>
+            <p className="text-sm text-gray-400">@{video.uploader.username}</p>
+            <p className="text-xs text-gray-500">{video.viewcount} views</p>
           </div>
 
           <Button size="sm" variant="ghost" className="text-gray-400 hover:text-white">
@@ -149,7 +150,7 @@ const VideoCard = ({ video, onLike, onComment, onShare }: VideoCardProps) => {
         </div>
 
         {/* Tags */}
-        <div className="flex flex-wrap gap-2">
+        {/* <div className="flex flex-wrap gap-2">
           {video.tags.map((tag, index) => (
             <Badge 
               key={index} 
@@ -159,7 +160,7 @@ const VideoCard = ({ video, onLike, onComment, onShare }: VideoCardProps) => {
               #{tag}
             </Badge>
           ))}
-        </div>
+        </div> */}
       </div>
     </div>
   );

@@ -4,7 +4,7 @@ const prismaClient = new PrismaClient();
 
 
 // Create a new video
-export const createVideo = async (data: createVideoInput & {uploader_id: string}) =>
+export const createVideo = async (data: createVideoInput & { uploader_id: string }) =>
   await prismaClient.video.create({ data });
 
 // Get a video (with uploader & interactions)
@@ -41,4 +41,9 @@ export const deleteVideo = async (videoid: string) =>
 
 // get list of videos
 export const getVideoList = async () =>
-  await prismaClient.video.findMany({ orderBy: {uploaded_at: "desc"} });
+  await prismaClient.video.findMany({ 
+    orderBy: { uploaded_at: "desc" },
+     include: {
+      uploader: true
+     }
+  });
