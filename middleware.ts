@@ -1,5 +1,5 @@
 import withAuth from "next-auth/middleware";
-import { NextFetchEvent, NextRequest, NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 
 export default withAuth(
     function middleware(req: NextRequest){
