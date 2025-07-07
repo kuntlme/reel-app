@@ -128,7 +128,7 @@ const Landing = () => {
               className="bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white text-lg px-12 py-4"
               onClick={() => window.location.href = '/signup'}
             >
-              Join Now - It`&apos`s Free!
+              Join Now - It&apos;s Free!
             </Button>
           </div>
         </div>
@@ -137,7 +137,7 @@ const Landing = () => {
       {/* Footer */}
       <footer className="border-t border-white/10 py-8 px-6">
         <div className="max-w-6xl mx-auto text-center text-gray-400">
-          <p>&copy; 2024 Shorts. All rights reserved.</p>
+          <p>&copy; 2025 Shorts. All rights reserved.</p>
         </div>
       </footer>
     </div>

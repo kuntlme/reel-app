@@ -1,12 +1,18 @@
 import withAuth from "next-auth/middleware";
-import { NextRequest, NextResponse } from "next/server";
+import { NextFetchEvent, NextRequest, NextResponse } from "next/server";
 
 export default withAuth(
     function middleware(req: NextRequest){
         const { pathname} = req.nextUrl;
+        const token = req.nextauth.token;
 
         if(pathname === "/"){
-            return NextResponse.redirect(new URL("/home", req.url));
+            if(!!token){
+                return NextResponse.redirect(new URL("/home", req.url));
+            }
+            else{
+                return NextResponse.next()
+            }
         }
 
         return NextResponse.next()
@@ -20,7 +26,7 @@ export default withAuth(
                 if(
                     pathname.startsWith("/api/auth") || 
                     pathname === "/login" ||
-                    pathname === "/register"
+                    pathname === "/register" 
 
                 ){
                     return true;
