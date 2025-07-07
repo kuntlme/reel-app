@@ -1,6 +1,5 @@
-import { PrismaClient } from "@/app/generated/prisma";
 import { createInteractionInput } from "../type";
-const prismaClient = new PrismaClient();
+import { prismaClient } from "../prisma";
 
 // Common helper
 export async function createInteraction(data: createInteractionInput & {

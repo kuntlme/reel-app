@@ -1,6 +1,5 @@
-import {  PrismaClient } from "@/app/generated/prisma";
+import { prismaClient } from "../prisma";
 import { createVideoInput } from "../type";
-const prismaClient = new PrismaClient();
 
 
 // Create a new video
