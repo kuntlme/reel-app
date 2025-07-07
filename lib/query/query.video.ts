@@ -1,4 +1,4 @@
-import { Prisma, PrismaClient } from "@/app/generated/prisma";
+import {  PrismaClient } from "@/app/generated/prisma";
 import { createVideoInput } from "../type";
 const prismaClient = new PrismaClient();
 
@@ -13,9 +13,9 @@ export const getVideo = async (videoid: string) =>
     where: { videoid },
     include: {
       uploader: true,
-      interactions: {
-        include: { comment: true, like: true },
-      },
+      // interactions: {
+      //   include: { comment: true, like: true },
+      // },
     },
   });
 

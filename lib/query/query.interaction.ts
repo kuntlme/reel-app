@@ -46,10 +46,8 @@ export const countLikesForVideo = async (video_id: string) =>
 
 // Check if given user liked a video
 export const hasUserLikedVideo = async (user_id: string, video_id: string) =>
-  await prismaClient.like.findUnique({
-    where: {
-      interaction_id: `${user_id}_${video_id}`, // if you override composite PK
-    },
+  await prismaClient.like.findFirst({
+    where: { interaction: {video_id, user_id}},
   });
 
 // Top 5 active viewers

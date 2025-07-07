@@ -24,7 +24,7 @@ export const createUser = async (data: CreateUserInput) => {
 export const getUserById = async (userid: string) =>
     await prismaClient.user.findUnique({
         where: { userid },
-        include: { creator: true, viewer: true },
+        include: { creator: true, viewer: true, videos: { include : {uploader : true}} },
     });
 
 // Read user by username
