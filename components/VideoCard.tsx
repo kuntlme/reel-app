@@ -1,13 +1,21 @@
-"use client"
-import { useState} from 'react';
-import { Heart, MessageCircle, Share, Play, Pause, Volume2, VolumeX, MoreHorizontal } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Badge } from '@/components/ui/badge';
-import { useRouter } from 'next/navigation';
-import Image from 'next/image';
-import { IVideo } from './VideoFeed';
-
+"use client";
+import { useState } from "react";
+import {
+  Heart,
+  MessageCircle,
+  Share,
+  Play,
+  Pause,
+  Volume2,
+  VolumeX,
+  MoreHorizontal,
+} from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Badge } from "@/components/ui/badge";
+import { useRouter } from "next/navigation";
+import Image from "next/image";
+import { IVideo } from "./VideoFeed";
 
 interface VideoCardProps {
   video: IVideo;
@@ -28,18 +36,24 @@ const VideoCard = ({ video }: VideoCardProps) => {
   return (
     <div className="relative group overflow-hidden rounded-2xl bg-gradient-to-br from-purple-900/20 to-pink-900/20 backdrop-blur-sm border border-white/10 hover:border-purple-500/50 transition-all duration-300">
       {/* Video Thumbnail */}
-      <div 
+      <div
         className="relative aspect-[9/16] bg-gradient-to-br from-purple-600 to-pink-600 cursor-pointer"
         onClick={handleVideoClick}
       >
-        <Image 
+        {/* <Image 
           src={video.sharelink + `/ik-thumbnail.jpg`} 
           alt={video.sharelink + `ik-thumbnail.jpg`}
           className="w-full h-full object-cover"
           height={300}
           width={100}
-        />
-        
+        /> */}
+        <video
+          src={video.sharelink}
+          className="w-full h-full object-cover"
+          height={300}
+          width={100}
+        ></video>
+
         {/* Play Button Overlay */}
         <div className="absolute inset-0 flex items-center justify-center bg-black/20">
           <Button
@@ -48,7 +62,7 @@ const VideoCard = ({ video }: VideoCardProps) => {
             onClick={(e) => {
               e.stopPropagation();
               setIsPlaying(!isPlaying);
-              router.push(`/video/${video.videoid}`)
+              router.push(`/video/${video.videoid}`);
             }}
           >
             {/* {isPlaying ? <Pause className="h-8 w-8" /> : <Play className="h-8 w-8" />} */}
@@ -120,8 +134,9 @@ const VideoCard = ({ video }: VideoCardProps) => {
       </div>
 
       {/* Video Info */}
-      <div className="p-4 space-y-3"
-      onClick={() => router.push(`/profile/${video.uploader.userid}`)}
+      <div
+        className="p-4 space-y-3"
+        onClick={() => router.push(`/profile/${video.uploader.userid}`)}
       >
         <div className="flex items-start gap-3">
           <Avatar className="h-10 w-10 ring-2 ring-purple-500/50">
@@ -130,14 +145,20 @@ const VideoCard = ({ video }: VideoCardProps) => {
               {video.uploader.username.charAt(0).toUpperCase()}
             </AvatarFallback>
           </Avatar>
-          
+
           <div className="flex-1 min-w-0">
-            <h3 className="font-semibold text-white truncate">{video.description}</h3>
+            <h3 className="font-semibold text-white truncate">
+              {video.description}
+            </h3>
             <p className="text-sm text-gray-400">@{video.uploader.username}</p>
             <p className="text-xs text-gray-500">{video.viewcount} views</p>
           </div>
 
-          <Button size="sm" variant="ghost" className="text-gray-400 hover:text-white">
+          <Button
+            size="sm"
+            variant="ghost"
+            className="text-gray-400 hover:text-white"
+          >
             <MoreHorizontal className="h-4 w-4" />
           </Button>
         </div>

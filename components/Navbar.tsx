@@ -1,25 +1,60 @@
-"use client"
-import { useState } from 'react';
-import { Home, Search, Plus, User, Heart, Menu, X } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Badge } from '@/components/ui/badge';
-import { usePathname, useRouter } from 'next/navigation';
-import { useSession } from 'next-auth/react';
-
+"use client";
+import { useEffect, useState } from "react";
+import { Home, Search, Plus, User, Heart, Menu, X } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Badge } from "@/components/ui/badge";
+import { usePathname, useRouter } from "next/navigation";
+import { useSession } from "next-auth/react";
+import { toast } from "sonner";
+import { IUser } from "./UserProfile";
 
 const NavigationBar = () => {
-  const session = useSession()
+  const session = useSession();
   const activeTab = usePathname();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [user, setUser] = useState<IUser | null>(null);
   const router = useRouter();
 
+  useEffect(() => {
+    if (session.status === "authenticated" && session.data?.user?.id) {
+      const fetchData = async () => {
+        try {
+          const res = await fetch(`/api/users/${session.data.user.id}`, {
+            method: "GET",
+            headers: { "Content-Type": "application/json" },
+            credentials: "include",
+          });
+          const data = await res.json();
+          if (data?.user?.username) {
+            setUser(data.user);
+          }
+        } catch (error) {
+          console.error("Fetch error:", error);
+          toast("Something went wrong while loading profile");
+        }
+      };
+      fetchData();
+    }
+  }, [session]);
+
   const navItems = [
-    { id: 'home', path: '/home', icon: Home, label: 'Home' },
-    { id: 'discover', path: '/discover', icon: Search, label: 'Discover' },
-    { id: 'create', path: '/create', icon: Plus, label: 'Create', special: true },
-    { id: 'activity', path: '/activity', icon: Heart, label: 'Activity' },
-    { id: 'profile', path: `/profile/${session.data?.user?.id}`, icon: User, label: 'Profile' },
+    { id: "home", path: "/home", icon: Home, label: "Home" },
+    { id: "discover", path: "/discover", icon: Search, label: "Discover" },
+    {
+      id: "create",
+      path: "/create",
+      icon: Plus,
+      label: "Create",
+      special: true,
+    },
+    { id: "activity", path: "/activity", icon: Heart, label: "Activity" },
+    {
+      id: "profile",
+      path: `/profile/${session.data?.user?.id}`,
+      icon: User,
+      label: "Profile",
+    },
   ];
 
   return (
@@ -43,17 +78,17 @@ const NavigationBar = () => {
                 variant={activeTab === item.path ? "default" : "ghost"}
                 size="sm"
                 className={`relative ${
-                  item.special 
-                    ? 'bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white' 
-                    : activeTab === item.path 
-                      ? 'bg-purple-500/20 text-purple-300 hover:bg-purple-500/30' 
-                      : 'text-gray-400 hover:text-white hover:bg-white/10'
+                  item.special
+                    ? "bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white"
+                    : activeTab === item.path
+                    ? "bg-purple-500/20 text-purple-300 hover:bg-purple-500/30"
+                    : "text-gray-400 hover:text-white hover:bg-white/10"
                 }`}
                 onClick={() => router.push(item.path)}
               >
                 <item.icon className="h-4 w-4 mr-2" />
                 {item.label}
-                {item.path === '/activity' && (
+                {item.path === "/activity" && (
                   <Badge className="ml-2 bg-red-500 text-white text-xs w-5 h-5 p-0 flex items-center justify-center">
                     3
                   </Badge>
@@ -63,11 +98,11 @@ const NavigationBar = () => {
           </div>
 
           {/* User Profile */}
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-3 cursor-pointer" onClick={() => router.push(`/profile/${user?.userid}`)}>
             <Avatar className="h-8 w-8 ring-2 ring-purple-500/50">
-              <AvatarImage src="/placeholder.svg" alt="User" />
+              {/* <AvatarImage src="/placeholder.svg" alt="User" /> */}
               <AvatarFallback className="bg-gradient-to-br from-purple-500 to-pink-500 text-white text-sm">
-                U
+                {user?.username.charAt(0).toUpperCase()}
               </AvatarFallback>
             </Avatar>
           </div>
@@ -92,7 +127,11 @@ const NavigationBar = () => {
             className="text-gray-400 hover:text-white"
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
           >
-            {isMobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+            {isMobileMenuOpen ? (
+              <X className="h-5 w-5" />
+            ) : (
+              <Menu className="h-5 w-5" />
+            )}
           </Button>
         </div>
 
@@ -105,21 +144,23 @@ const NavigationBar = () => {
                   key={item.id}
                   variant="ghost"
                   className={`w-full justify-start ${
-                    item.special 
-                      ? 'bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white' 
-                      : activeTab === item.path 
-                        ? 'bg-purple-500/20 text-purple-300' 
-                        : 'text-gray-400 hover:text-white'
+                    item.special
+                      ? "bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white"
+                      : activeTab === item.path
+                      ? "bg-purple-500/20 text-purple-300"
+                      : "text-gray-400 hover:text-white"
                   }`}
                   onClick={() => {
                     setIsMobileMenuOpen(false);
-                    router.push(item.path)
+                    router.push(item.path);
                   }}
                 >
                   <item.icon className="h-4 w-4 mr-3" />
                   {item.label}
-                  {item.path === '/activity' && (
-                    <Badge className="ml-auto bg-red-500 text-white text-xs">3</Badge>
+                  {item.path === "/activity" && (
+                    <Badge className="ml-auto bg-red-500 text-white text-xs">
+                      3
+                    </Badge>
                   )}
                 </Button>
               ))}
@@ -137,17 +178,17 @@ const NavigationBar = () => {
               variant="ghost"
               size="sm"
               className={`flex flex-col items-center gap-1 p-2 ${
-                item.special 
-                  ? 'bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-full' 
-                  : activeTab === item.path 
-                    ? 'text-purple-300' 
-                    : 'text-gray-400'
+                item.special
+                  ? "bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-full"
+                  : activeTab === item.path
+                  ? "text-purple-300"
+                  : "text-gray-400"
               }`}
               onClick={() => router.push(item.path)}
             >
               <item.icon className="h-5 w-5" />
               <span className="text-xs">{item.label}</span>
-              {item.path === '/activity' && (
+              {item.path === "/activity" && (
                 <Badge className="absolute top-0 right-0 bg-red-500 text-white text-xs w-4 h-4 p-0 flex items-center justify-center">
                   3
                 </Badge>
