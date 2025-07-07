@@ -63,7 +63,7 @@ const NavigationBar = () => {
       <nav className="hidden md:flex fixed top-0 left-0 right-0 z-50 bg-black/90 backdrop-blur-md border-b border-white/10">
         <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between w-full">
           {/* Logo */}
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 cursor-pointer" onClick={() => router.push("/home")}>
             <div className="w-8 h-8 bg-gradient-to-br from-purple-500 to-pink-500 rounded-lg flex items-center justify-center">
               <span className="text-white font-bold text-lg">S</span>
             </div>
@@ -77,7 +77,7 @@ const NavigationBar = () => {
                 key={item.id}
                 variant={activeTab === item.path ? "default" : "ghost"}
                 size="sm"
-                className={`relative ${
+                className={`cursor-pointer relative ${
                   item.special
                     ? "bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white"
                     : activeTab === item.path

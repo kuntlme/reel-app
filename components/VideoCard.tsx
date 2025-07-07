@@ -136,10 +136,9 @@ const VideoCard = ({ video }: VideoCardProps) => {
       {/* Video Info */}
       <div
         className="p-4 space-y-3"
-        onClick={() => router.push(`/profile/${video.uploader.userid}`)}
       >
         <div className="flex items-start gap-3">
-          <Avatar className="h-10 w-10 ring-2 ring-purple-500/50">
+          <Avatar className="h-10 w-10 ring-2 ring-purple-500/50 cursor-pointer" onClick={() => router.push(`/profile/${video.uploader.userid}`)}>
             {/* <AvatarImage src={"ds"} alt={video.videoid.charAt(0)} /> */}
             <AvatarFallback className="bg-gradient-to-br from-purple-500 to-pink-500 text-white">
               {video.uploader.username.charAt(0).toUpperCase()}

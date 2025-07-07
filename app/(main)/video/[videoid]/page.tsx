@@ -234,7 +234,7 @@ const VideoPage = () => {
             <div className="space-y-6">
               <div className="rounded-2xl p-6 space-y-4 bg-white/5 border border-white/10">
                 <div className="flex items-start gap-3">
-                  <Avatar className="h-12 w-12 ring-2 ring-purple-500/50">
+                  <Avatar className="h-12 w-12 ring-2 ring-purple-500/50 cursor-pointer" onClick={() => router.push(`/profile/${video.uploader.userid}`)}>
                     <AvatarFallback className="bg-gradient-to-br from-purple-500 to-pink-500 text-white">
                       {video.uploader.username.charAt(0).toUpperCase()}
                     </AvatarFallback>
@@ -272,7 +272,7 @@ const VideoPage = () => {
                 </div>
 
                 <div className="flex gap-3">
-                  <Avatar className="h-8 w-8">
+                  <Avatar className="h-8 w-8 cursor-pointer" onClick={()=> router.push(`/profile/${video.uploader.userid}`)}>
                     <AvatarFallback className="bg-gradient-to-br from-purple-500 to-pink-500 text-white text-sm">
                       {video.uploader.username.charAt(0).toUpperCase()}
                     </AvatarFallback>
@@ -300,9 +300,9 @@ const VideoPage = () => {
                 <div className="space-y-4 max-h-96 overflow-y-auto">
                   {comments.map((comment) => (
                     <div key={comment.interaction_id} className="flex gap-3">
-                      <Avatar className="h-8 w-8">
+                      <Avatar className="h-8 w-8 cursor-pointer" onClick={() => router.push(`/profile/${comment.interaction.user.userid}`)}>
                         <AvatarFallback className="bg-gradient-to-br from-purple-500 to-pink-500 text-white text-sm">
-                          {comment.interaction.user.username.charAt(0)}
+                          {comment.interaction.user.username.charAt(0).toUpperCase()}
                         </AvatarFallback>
                       </Avatar>
                       <div className="flex-1">
