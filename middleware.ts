@@ -1,10 +1,14 @@
+import { getToken } from "next-auth/jwt";
 import withAuth from "next-auth/middleware";
 import { NextRequest, NextResponse } from "next/server";
 
 export default withAuth(
-    function middleware(req: NextRequest){
+    async function middleware(req: NextRequest){
         const { pathname} = req.nextUrl;
-        const token = req.nextauth.token;
+        const token = await getToken({
+            req: req,
+            secret: process.env.AUTH_SECRET
+        });
 
         if(pathname === "/"){
             if(!!token){

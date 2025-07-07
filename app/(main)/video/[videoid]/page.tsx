@@ -188,7 +188,7 @@ const VideoPage = () => {
                   src={video.sharelink}
                   playsInline
                   autoPlay
-                />
+                  loop                />
 
                 {/* Custom Play/Pause button */}
                 <button

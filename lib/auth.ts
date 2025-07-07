@@ -1,8 +1,5 @@
 import { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
- import { connectionToDatabase } from "./db";
-import bcrypt from "bcryptjs"
-import UserModel from "@/models/User";
 import { getUserByEmail } from "./query/query.user";
 import { verifyPassword } from "./hash";
 
