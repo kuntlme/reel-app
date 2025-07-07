@@ -5,7 +5,7 @@ import { useState, useEffect } from "react";
 import VideoCard from "./VideoCard";
 // import CustomVideo from "./CustomVideo";
 
-interface Video {
+export interface IVideo {
   videoid: string;
   uploader_id: string;
   description: string;
@@ -14,11 +14,12 @@ interface Video {
   uploaded_at: string;
   uploader: {
     username: string;
+    userid: string;
   };
 }
 
 const VideoFeed = () => {
-  const [videos, setVideos] = useState<Video[]>([]);
+  const [videos, setVideos] = useState<IVideo[]>([]);
   // const [filterType, setFilterType] = useState<
   //   "trending" | "recent" | "popular"
   // >("trending");

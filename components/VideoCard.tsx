@@ -6,21 +6,11 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
+import { IVideo } from './VideoFeed';
 
-interface Video {
-  videoid: string;
-  uploader_id: string;
-  description: string;
-  sharelink: string;
-  viewcount: number;
-  uploaded_at: string;
-  uploader: {
-    username: string
-  };
-}
 
 interface VideoCardProps {
-  video: Video;
+  video: IVideo;
   // onLike: (id: string) => void;
   // onComment: (id: string) => void;
   // onShare: (id: string) => void;
@@ -58,6 +48,7 @@ const VideoCard = ({ video }: VideoCardProps) => {
             onClick={(e) => {
               e.stopPropagation();
               setIsPlaying(!isPlaying);
+              router.push(`/video/${video.videoid}`)
             }}
           >
             {/* {isPlaying ? <Pause className="h-8 w-8" /> : <Play className="h-8 w-8" />} */}
@@ -129,12 +120,14 @@ const VideoCard = ({ video }: VideoCardProps) => {
       </div>
 
       {/* Video Info */}
-      <div className="p-4 space-y-3">
+      <div className="p-4 space-y-3"
+      onClick={() => router.push(`/profile/${video.uploader.userid}`)}
+      >
         <div className="flex items-start gap-3">
           <Avatar className="h-10 w-10 ring-2 ring-purple-500/50">
-            <AvatarImage src={"ds"} alt={video.videoid.charAt(0)} />
+            {/* <AvatarImage src={"ds"} alt={video.videoid.charAt(0)} /> */}
             <AvatarFallback className="bg-gradient-to-br from-purple-500 to-pink-500 text-white">
-              {video.videoid.charAt(0)}
+              {video.uploader.username.charAt(0).toUpperCase()}
             </AvatarFallback>
           </Avatar>
           

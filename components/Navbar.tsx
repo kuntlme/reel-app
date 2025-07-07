@@ -5,9 +5,11 @@ import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { usePathname, useRouter } from 'next/navigation';
+import { useSession } from 'next-auth/react';
 
 
 const NavigationBar = () => {
+  const session = useSession()
   const activeTab = usePathname();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const router = useRouter();
@@ -17,7 +19,7 @@ const NavigationBar = () => {
     { id: 'discover', path: '/discover', icon: Search, label: 'Discover' },
     { id: 'create', path: '/create', icon: Plus, label: 'Create', special: true },
     { id: 'activity', path: '/activity', icon: Heart, label: 'Activity' },
-    { id: 'profile', path: '/profile', icon: User, label: 'Profile' },
+    { id: 'profile', path: `/profile/${session.data?.user?.id}`, icon: User, label: 'Profile' },
   ];
 
   return (
