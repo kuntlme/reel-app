@@ -1,7 +1,6 @@
 "use client";
 import { useRouter } from "next/navigation";
-import React, { useEffect, useState } from "react";
-import { date } from "zod";
+import React, { useState } from "react";
 
 function RegisterPage() {
   const [email, setEmail] = useState("");

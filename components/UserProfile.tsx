@@ -1,9 +1,9 @@
 "use client";
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
-import { Settings, Globe, Calendar, LogOut, Edit3 } from "lucide-react";
+import { Settings, Calendar, LogOut, Edit3 } from "lucide-react";
 import VideoCard from "./VideoCard";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
@@ -53,7 +53,7 @@ const UserProfile = ({ userid }: { userid: string }) => {
       console.log(error);
       toast("something error");
     }
-  }, []);
+  }, [userid]);
 
   const handleLogout = async () => {
     await signOut();

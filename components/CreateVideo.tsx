@@ -1,6 +1,6 @@
 "use client";
-import React, { useEffect, useRef, useState } from "react";
-import { Upload, Camera, Music, Hash, X, Plus } from "lucide-react";
+import React, { useRef, useState } from "react";
+import { Upload, Camera, Hash, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -10,7 +10,6 @@ import { Textarea } from "./ui/textarea";
 import { Progress } from "./ui/progress";
 import { upload } from "@imagekit/next";
 import { toast } from "sonner";
-import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
 
 type UploadResponse = {
@@ -20,15 +19,15 @@ type UploadResponse = {
 };
 
 const CreateVideo = () => {
-  const [title, setTitle] = useState("");
+  // const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [tags, setTags] = useState<string[]>([]);
   const [newTag, setNewTag] = useState("");
   const [videoFile, setVideoFile] = useState<File | null>(null);
-  const [thumbnail, setThumbnail] = useState<File | null>(null);
+  // const [thumbnail, setThumbnail] = useState<File | null>(null);
   const [isUploading, setIsUploading] = useState(false);
   const [progress, setProgress] = useState(0);
-  const [onSuccess, setOnsuccess] = useState(false);
+  // const [onSuccess, setOnsuccess] = useState(false);
   const [response, setResponse] = useState<UploadResponse | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const router = useRouter();

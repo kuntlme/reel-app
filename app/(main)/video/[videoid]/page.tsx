@@ -52,7 +52,7 @@ const VideoPage = () => {
       if(res.ok) console.log("done");
     };
     fetchData();
-  }, []);
+  }, [videoid]);
 
   //fetch video from server
   useEffect(() => {
@@ -66,7 +66,7 @@ const VideoPage = () => {
       setVideo(data);
     };
     fetchData();
-  }, []);
+  }, [videoid]);
 
   // fetch comments and likes from the server
   useEffect(() => {
@@ -82,7 +82,7 @@ const VideoPage = () => {
       setLikeCount(data.likes);
     };
     fetchData();
-  }, []);
+  }, [videoid]);
 
   const handleAddComment = async () => {
     if (newComment.trim() && video) {

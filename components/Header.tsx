@@ -10,7 +10,8 @@ function Header() {
     try{
       await signOut();
     } catch(error){
-
+      console.log(error);
+      throw new Error("logout error");
     }
   }
   return (

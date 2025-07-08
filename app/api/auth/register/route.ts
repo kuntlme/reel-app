@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { CreateUserInput, createUserSchema } from "@/lib/type";
 import { createUser } from "@/lib/query/query.user";
-import { hashPassword } from "@/lib/hash";
 
 export async function POST(request: NextRequest) {
 
@@ -16,7 +15,7 @@ export async function POST(request: NextRequest) {
             )
         }
 
-        let userData: CreateUserInput = result.data;
+        const userData: CreateUserInput = result.data;
 
         const user = createUser(userData);
 

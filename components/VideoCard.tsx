@@ -1,20 +1,12 @@
 "use client";
 import { useState } from "react";
 import {
-  Heart,
-  MessageCircle,
-  Share,
   Play,
-  Pause,
-  Volume2,
-  VolumeX,
   MoreHorizontal,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Badge } from "@/components/ui/badge";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { useRouter } from "next/navigation";
-import Image from "next/image";
 import { IVideo } from "./VideoFeed";
 
 interface VideoCardProps {

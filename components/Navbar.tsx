@@ -2,7 +2,7 @@
 import { useEffect, useState } from "react";
 import { Home, Search, Plus, User, Heart, Menu, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { usePathname, useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";

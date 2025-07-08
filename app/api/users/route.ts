@@ -3,6 +3,7 @@ import { NextRequest, NextResponse } from "next/server"
 
 export async function GET(req: NextRequest) {
     try {
+        console.log(req);
         const users = await getUserList();
         return NextResponse.json({ users }, { status: 200 });
     } catch (error) {

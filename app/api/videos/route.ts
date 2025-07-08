@@ -1,8 +1,7 @@
 import { authOptions } from "@/lib/auth";
 import { bumpCreatorCount } from "@/lib/query/query.interaction";
-import { createVideo, getVideo, getVideoList } from "@/lib/query/query.video";
+import { createVideo, getVideoList } from "@/lib/query/query.video";
 import { createVideoSchema } from "@/lib/type";
-import { error } from "console";
 import { getServerSession } from "next-auth";
 import { NextRequest, NextResponse } from "next/server";
 
