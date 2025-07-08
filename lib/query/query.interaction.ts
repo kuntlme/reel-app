@@ -1,5 +1,5 @@
 import { createInteractionInput } from "../type";
-import { prismaClient } from "../prisma";
+import prismaClient from "../prisma";
 
 // Common helper
 export async function createInteraction(data: createInteractionInput & {
