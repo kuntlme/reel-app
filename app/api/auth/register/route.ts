@@ -19,6 +19,13 @@ export async function POST(request: NextRequest) {
 
         const user = createUser(userData);
 
+        if(!user){
+            return NextResponse.json(
+                { error: "user not created" },
+                { status: 405 },
+            )
+        }
+
         return NextResponse.json(
             { message: "User registered successfully", user },
             { status: 200 }
