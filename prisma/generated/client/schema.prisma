@@ -1,0 +1,92 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "./generated/client"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("POSTGRES_URL")
+}
+
+model User {
+  email        String   @unique
+  userid       String   @id @default(uuid())
+  password     String
+  profilename  String
+  username     String   @unique
+  joining_date DateTime
+  location     String
+
+  //relations
+  videos       Video[]       @relation("UserVideos")
+  interactions Interaction[] @relation("UserInteractions")
+  creator      Creator?
+  viewer       Viewer?
+}
+
+model Creator {
+  userid                String @id
+  total_videos_uploaded Int
+
+  //relations
+  user User @relation(fields: [userid], references: [userid])
+}
+
+model Viewer {
+  userid             String @id
+  total_interactions Int
+
+  //relations
+  user User @relation(fields: [userid], references: [userid])
+}
+
+model Video {
+  videoid     String   @id @default(uuid())
+  uploader_id String
+  description String
+  sharelink   String
+  viewcount   Int      @default(0)
+  uploaded_at DateTime
+
+  //relations
+  uploader     User          @relation("UserVideos", fields: [uploader_id], references: [userid], onDelete: Cascade)
+  interactions Interaction[]
+}
+
+model Interaction {
+  interaction_id String          @id @default(uuid())
+  user_id        String
+  video_id       String
+  interaction_at DateTime
+  type           InteractionType
+
+  //relations
+  user    User     @relation("UserInteractions", fields: [user_id], references: [userid], onDelete: Cascade)
+  video   Video    @relation(fields: [video_id], references: [videoid])
+  like    Like?
+  comment Comment?
+}
+
+model Comment {
+  interaction_id String @id
+  comment_text   String
+
+  //relations
+  interaction Interaction @relation(fields: [interaction_id], references: [interaction_id])
+}
+
+model Like {
+  interaction_id String      @id
+  interaction    Interaction @relation(fields: [interaction_id], references: [interaction_id])
+}
+
+enum InteractionType {
+  comment
+  like
+}
