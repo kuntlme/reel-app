@@ -6,7 +6,7 @@
     "dev": "next dev",
     "build": "next build",
     "postinstall": "prisma generate --no-engine",
-    "start": "npx prisma generate --no-engine && next start",
+    "start": "next start",
     "lint": "next lint"
   },
   "dependencies": {
