@@ -1,6 +1,6 @@
 import { CreateUserInput, updateUserInput } from "../type";
 import { hashPassword } from "../hash";
-import { PrismaClient } from "@prisma/client";
+import {prismaClient} from "../prisma"
 
 
 // Create a new user
@@ -21,7 +21,7 @@ export const createUser = async (data: CreateUserInput) => {
 
 // Read user by ID (with profile, creator & viewer info)
 export const getUserById = async (userid: string) =>
-    await PrismaClient.user.findUnique({
+    await prismaClient.user.findUnique({
         where: { userid },
         include: { creator: true, viewer: true, videos: { include : {uploader : true}} },
     });
