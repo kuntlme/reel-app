@@ -17,7 +17,7 @@ export async function POST(request: NextRequest) {
 
         const userData: CreateUserInput = result.data;
 
-        const user = createUser(userData);
+        const user = await createUser(userData);
 
         if(!user){
             return NextResponse.json(
