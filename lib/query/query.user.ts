@@ -1,7 +1,6 @@
 import { CreateUserInput, updateUserInput } from "../type";
 import { hashPassword } from "../hash";
-import {prismaClient} from "../prisma"
-
+import prismaClient from "../prisma";
 
 // Create a new user
 export const createUser = async (data: CreateUserInput) => {
