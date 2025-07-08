@@ -1,5 +1,5 @@
 import { createVideoInput } from "../type";
-import {prismaClient} from "../prisma"
+import prismaClient from "../prisma";
 
 // Create a new video
 export const createVideo = async (data: createVideoInput & { uploader_id: string }) =>
