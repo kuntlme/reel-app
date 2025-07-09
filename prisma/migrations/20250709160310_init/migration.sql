@@ -3,7 +3,9 @@ CREATE TYPE "InteractionType" AS ENUM ('comment', 'like');
 
 -- CreateTable
 CREATE TABLE "User" (
+    "email" TEXT NOT NULL,
     "userid" TEXT NOT NULL,
+    "password" TEXT NOT NULL,
     "profilename" TEXT NOT NULL,
     "username" TEXT NOT NULL,
     "joining_date" TIMESTAMP(3) NOT NULL,
@@ -15,7 +17,7 @@ CREATE TABLE "User" (
 -- CreateTable
 CREATE TABLE "Creator" (
     "userid" TEXT NOT NULL,
-    "total_video_uploaded" INTEGER NOT NULL,
+    "total_videos_uploaded" INTEGER NOT NULL,
 
     CONSTRAINT "Creator_pkey" PRIMARY KEY ("userid")
 );
@@ -34,7 +36,7 @@ CREATE TABLE "Video" (
     "uploader_id" TEXT NOT NULL,
     "description" TEXT NOT NULL,
     "sharelink" TEXT NOT NULL,
-    "viewcount" INTEGER NOT NULL,
+    "viewcount" INTEGER NOT NULL DEFAULT 0,
     "uploaded_at" TIMESTAMP(3) NOT NULL,
 
     CONSTRAINT "Video_pkey" PRIMARY KEY ("videoid")
@@ -67,6 +69,9 @@ CREATE TABLE "Like" (
 );
 
 -- CreateIndex
+CREATE UNIQUE INDEX "User_email_key" ON "User"("email");
+
+-- CreateIndex
 CREATE UNIQUE INDEX "User_username_key" ON "User"("username");
 
 -- AddForeignKey
@@ -76,10 +81,10 @@ ALTER TABLE "Creator" ADD CONSTRAINT "Creator_userid_fkey" FOREIGN KEY ("userid"
 ALTER TABLE "Viewer" ADD CONSTRAINT "Viewer_userid_fkey" FOREIGN KEY ("userid") REFERENCES "User"("userid") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "Video" ADD CONSTRAINT "Video_uploader_id_fkey" FOREIGN KEY ("uploader_id") REFERENCES "User"("userid") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "Video" ADD CONSTRAINT "Video_uploader_id_fkey" FOREIGN KEY ("uploader_id") REFERENCES "User"("userid") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "Interaction" ADD CONSTRAINT "Interaction_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "User"("userid") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "Interaction" ADD CONSTRAINT "Interaction_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "User"("userid") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "Interaction" ADD CONSTRAINT "Interaction_video_id_fkey" FOREIGN KEY ("video_id") REFERENCES "Video"("videoid") ON DELETE RESTRICT ON UPDATE CASCADE;
