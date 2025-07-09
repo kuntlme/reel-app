@@ -8,7 +8,7 @@ const prismaClient =
   process.env.NODE_ENV === 'production'
     ? new PrismaClient()
     : global.prismaClient || new PrismaClient({
-      datasourceUrl: process.env.DATABASE_URL
+      datasources: { db: { url: process.env.DATABASE_URL } }
     })
 
 if (process.env.NODE_ENV !== 'production') {
