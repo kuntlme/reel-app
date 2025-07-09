@@ -22,7 +22,7 @@ function LoginPage() {
       if (result?.error) {
         console.log(result.error);
       } else {
-        router.push("/");
+        router.push("/home");
       }
     } catch (error) {
       console.log(error);
