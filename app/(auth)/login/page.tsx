@@ -11,8 +11,6 @@ function LoginPage() {
     e.preventDefault();
 
     try {
-      // react query
-      // loading, error, debounce
       const result = await signIn("credentials", {
         email,
         password,
@@ -28,47 +26,55 @@ function LoginPage() {
       console.log(error);
     }
   }
+
   return (
-    <div className="min-h-screen w-full flex flex-col justify-center items-center">
-      <div className="bg-gray-200 text-black p-5 rounded-xl h-1/3 w-1/3 flex flex-col gap-5">
-<form
-        onSubmit={handleSubmit}
-        className="flex flex-col gap-2"
-      >
-        <h1 className="text-center text-5xl font-bold pb-5">Signin</h1>
-        <label htmlFor="email" className="text-center">
-          {" "}
-          Email{" "}
-        </label>
-        <input
-          id="email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          type="text"
-          className="bg-white rounded-2xl px-2 py-1 text-center"
-        />
-        <label htmlFor="password" className="text-center">
-          {" "}
-          password{" "}
-        </label>
-        <input
-          id="password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          type="password"
-          className="bg-white rounded-2xl px-2 py-1 text-center"
-        />
-        <button className="text-white font-semibold p-2 bg-black rounded-xl mt-5">
-          Signin
-        </button>
-      </form>
-      <div className="text-center">
-        Don{`&apos`}t have an account ? 
-        <button onClick={() => router.push("/register")}> Register</button>
+    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-purple-900/20 to-black flex items-center justify-center px-4">
+      <div className="w-full max-w-md bg-black/70 backdrop-blur-lg border border-white/10 text-white p-8 rounded-2xl shadow-lg">
+        <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+          <h1 className="text-center text-4xl sm:text-5xl font-bold pb-4 gradient-text">Sign In</h1>
+
+          <div className="flex flex-col">
+            <label htmlFor="email" className="mb-1 text-sm sm:text-base">Email</label>
+            <input
+              id="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              type="email"
+              className="bg-gray-800/60 placeholder-gray-400 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-purple-500"
+              placeholder="you@example.com"
+            />
+          </div>
+
+          <div className="flex flex-col">
+            <label htmlFor="password" className="mb-1 text-sm sm:text-base">Password</label>
+            <input
+              id="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              type="password"
+              className="bg-gray-800/60 placeholder-gray-400 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-purple-500"
+              placeholder="••••••••"
+            />
+          </div>
+
+          <button
+            type="submit"
+            className="mt-4 py-2 text-lg font-semibold rounded-lg bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 transition-colors"
+          >
+            Sign In
+          </button>
+        </form>
+
+        <p className="mt-6 text-center text-sm sm:text-base text-gray-300">
+          Don&apos;t have an account?{' '}
+          <button
+            onClick={() => router.push("/register")}
+            className="text-purple-400 hover:underline"
+          >
+            Register
+          </button>
+        </p>
       </div>
-      </div>
-      
-      
     </div>
   );
 }
