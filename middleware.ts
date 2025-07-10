@@ -10,7 +10,7 @@ export default withAuth(
             secret: process.env.AUTH_SECRET
         });
 
-        if(pathname === "/"){
+        if(pathname === "/" || pathname === "/login" || pathname === "/register"){
             if(!!token){
                 return NextResponse.redirect(new URL("/home", req.url));
             }

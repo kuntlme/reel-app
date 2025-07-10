@@ -2,6 +2,7 @@
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
+import { toast } from "sonner";
 
 function LoginPage() {
   const [email, setEmail] = useState("");
@@ -11,15 +12,17 @@ function LoginPage() {
     e.preventDefault();
 
     try {
-      const result = await signIn("credentials", {
+      const res = await signIn("credentials", {
         email,
         password,
         redirect: false,
       });
 
-      if (result?.error) {
-        console.log(result.error);
+      if (res?.error) {
+        toast.error(res.error);
+        return;
       } else {
+        toast.success("Logged in successfully");
         router.push("/home");
       }
     } catch (error) {

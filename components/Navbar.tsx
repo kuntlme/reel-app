@@ -25,9 +25,11 @@ const NavigationBar = () => {
             headers: { "Content-Type": "application/json" },
             credentials: "include",
           });
-          const data = await res.json();
-          if (data?.user?.username) {
-            setUser(data.user);
+          if (res.ok) {
+            const data = await res.json();
+            if (data?.user?.username) {
+              setUser(data.user);
+            }
           }
         } catch (error) {
           console.error("Fetch error:", error);
@@ -63,7 +65,10 @@ const NavigationBar = () => {
       <nav className="hidden md:flex fixed top-0 left-0 right-0 z-50 bg-black/90 backdrop-blur-md border-b border-white/10">
         <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between w-full">
           {/* Logo */}
-          <div className="flex items-center gap-2 cursor-pointer" onClick={() => router.push("/home")}>
+          <div
+            className="flex items-center gap-2 cursor-pointer"
+            onClick={() => router.push("/home")}
+          >
             <div className="w-8 h-8 bg-gradient-to-br from-purple-500 to-pink-500 rounded-lg flex items-center justify-center">
               <span className="text-white font-bold text-lg">S</span>
             </div>
@@ -98,7 +103,10 @@ const NavigationBar = () => {
           </div>
 
           {/* User Profile */}
-          <div className="flex items-center gap-3 cursor-pointer" onClick={() => router.push(`/profile/${user?.userid}`)}>
+          <div
+            className="flex items-center gap-3 cursor-pointer"
+            onClick={() => router.push(`/profile/${user?.userid}`)}
+          >
             <Avatar className="h-8 w-8 ring-2 ring-purple-500/50">
               {/* <AvatarImage src="/placeholder.svg" alt="User" /> */}
               <AvatarFallback className="bg-gradient-to-br from-purple-500 to-pink-500 text-white text-sm">

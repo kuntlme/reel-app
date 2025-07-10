@@ -20,7 +20,7 @@ export const authOptions: NextAuthOptions = {
                 try{
                     const user = await getUserByEmail(credentials.email);
                     if(!user){
-                        throw new Error("no user found");
+                        throw new Error("No user found");
                     }
 
                     const isValid = await verifyPassword(credentials.password, user.password);  

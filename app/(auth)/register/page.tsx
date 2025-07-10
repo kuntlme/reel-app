@@ -1,6 +1,7 @@
 "use client";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
+import { toast } from "sonner";
 
 function RegisterPage() {
   const [email, setEmail] = useState("");
@@ -34,10 +35,22 @@ function RegisterPage() {
         }),
       });
 
-      if (!res.ok) throw new Error("Registration failed");
-      await res.json();
+      const result = await res.json();
+
+      if(res.status === 405){
+        toast.error(result.message);
+        return;
+      }
+
+      if(res.status === 500){
+        toast.error("Something went wrong");
+        return;
+      }
+
+      toast.success(result.message);            
       router.push("/login");
     } catch (error) {
+      toast("Something went wrong");
       console.log(error);
     }
   }

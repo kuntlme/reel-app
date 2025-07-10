@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { CreateUserInput, createUserSchema } from "@/lib/type";
-import { createUser } from "@/lib/query/query.user";
+import { createUser, getUserByEmail, getUserByUsername } from "@/lib/query/query.user";
 
 export async function POST(request: NextRequest) {
 
@@ -15,13 +15,31 @@ export async function POST(request: NextRequest) {
             )
         }
 
+        const existUser = await getUserByEmail(result.data.email);
+
+        if (existUser) {
+            return NextResponse.json(
+                { message: "User already exist" },
+                { status: 405 }
+            )
+        }
+
+        const existusername = await getUserByUsername(result.data.username);
+
+        if (existusername) {
+            return NextResponse.json(
+                { message: "Username already taken" },
+                { status: 405 }
+            )
+        }
+
         const userData: CreateUserInput = result.data;
 
         const user = await createUser(userData);
 
-        if(!user){
+        if (!user) {
             return NextResponse.json(
-                { error: "user not created" },
+                { message: "user not created" },
                 { status: 405 },
             )
         }

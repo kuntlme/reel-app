@@ -44,9 +44,11 @@ const UserProfile = ({ userid }: { userid: string }) => {
           headers: { "Content-Type": "application/json" },
           credentials: "include",
         });
-        const data = await res.json();
-        setUser(data.user);
-        setUserVideos(data.videos);
+        if (res.ok) {
+          const data = await res.json();
+          setUser(data.user);
+          setUserVideos(data.videos);
+        }
       };
       fetchData();
     } catch (error) {
