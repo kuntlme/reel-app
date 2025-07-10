@@ -19,7 +19,7 @@ export interface IVideo {
 }
 
 const VideoFeed = () => {
-  const [videos, setVideos] = useState<IVideo[]>([]);
+  const [videos, setVideos] = useState<IVideo[] | null>(null);
   // const [filterType, setFilterType] = useState<
   //   "trending" | "recent" | "popular"
   // >("trending");
@@ -182,6 +182,14 @@ const VideoFeed = () => {
   //   { key: "recent", label: "Recent", icon: Clock },
   //   { key: "popular", label: "Popular", icon: Flame },
   // ];
+
+  if (!videos) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-gray-900 via-purple-900/20 to-black pt-20 pb-24 flex items-center justify-center">
+        <div className="text-white">Loading...</div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-purple-900/20 to-black mt-12">
